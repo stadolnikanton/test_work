@@ -35,9 +35,12 @@ class AccessRoleRuleAdmin(admin.ModelAdmin):
         "role",
         "business_object",
         "read_permission",
+        "read_all_permission",
         "create_permission",
         "update_permission",
+        "update_all_permission",
         "delete_permission",
+        "delete_all_permission",
     )
     list_filter = ("role", "business_object")
     list_editable = (
