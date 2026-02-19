@@ -98,7 +98,7 @@ class AccessRoleRule(models.Model):
 
 class Session(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=500, unique=True)  # JWT или session ID
+    token = models.CharField(max_length=500, unique=True)
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
