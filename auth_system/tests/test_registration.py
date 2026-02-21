@@ -14,10 +14,10 @@ class TestRegistration:
             "email": "newuser@example.com",
             "password": "newpass123",
             "first_name": "New",
-            "last_name": "User"
+            "last_name": "User",
         }
         response = api_client.post(self.url, data)
-        
+
         assert response.status_code == status.HTTP_201_CREATED
         assert "access" in response.data
         assert "refresh" in response.data
@@ -28,10 +28,10 @@ class TestRegistration:
             "email": user.email,
             "password": "newpass123",
             "first_name": "New",
-            "last_name": "User"
+            "last_name": "User",
         }
         response = api_client.post(self.url, data)
-        
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "email" in response.data
 
@@ -40,9 +40,9 @@ class TestRegistration:
             "email": "short@example.com",
             "password": "123",
             "first_name": "Short",
-            "last_name": "User"
+            "last_name": "User",
         }
         response = api_client.post(self.url, data)
-        
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "password" in response.data

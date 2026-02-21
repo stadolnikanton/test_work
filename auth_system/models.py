@@ -1,5 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 
 
 class UserManager(BaseUserManager):
@@ -59,7 +63,7 @@ class UserRole(models.Model):
     assigned_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'role')
+        unique_together = ("user", "role")
 
     def __str__(self):
         return f"{self.user.email} → {self.role.name}"
@@ -90,7 +94,7 @@ class AccessRoleRule(models.Model):
     delete_all_permission = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('role', 'business_object')
+        unique_together = ("role", "business_object")
 
     def __str__(self):
         return f"{self.role.name} → {self.business_object.code}"

@@ -9,15 +9,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import User
 
-
 register_response = openapi.Response(
     description="Успешная регистрация",
     examples={
         "application/json": {
             "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-            "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+            "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
         }
-    }
+    },
 )
 
 
@@ -27,7 +26,7 @@ class RegisterAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="Регистрация нового пользователя",
         request_body=RegisterSerializer,
-        responses={201: register_response, 400: "Ошибка валидации данных"}
+        responses={201: register_response, 400: "Ошибка валидации данных"},
     )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -36,16 +35,21 @@ class RegisterAPIView(APIView):
             user = serializer.save()
 
             refresh = RefreshToken.for_user(user)
-            refresh.payload.update({
-                "user_id": user.id,
-                "firstname": user.first_name,
-                "lastname": user.last_name,
-            })
+            refresh.payload.update(
+                {
+                    "user_id": user.id,
+                    "firstname": user.first_name,
+                    "lastname": user.last_name,
+                }
+            )
 
-            return Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }, status=HTTP_201_CREATED)
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+                status=HTTP_201_CREATED,
+            )
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
@@ -56,7 +60,7 @@ class LoginAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="Вход в систему",
         request_body=LoginSerializer,
-        responses={200: register_response, 400: "Неверный email или пароль"}
+        responses={200: register_response, 400: "Неверный email или пароль"},
     )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -65,16 +69,20 @@ class LoginAPIView(APIView):
             user = serializer.validated_data["user"]
 
             refresh = RefreshToken.for_user(user)
-            refresh.payload.update({
-                "user_id": user.id,
-                "firstname": user.first_name,
-                "lastname": user.last_name,
-            })
+            refresh.payload.update(
+                {
+                    "user_id": user.id,
+                    "firstname": user.first_name,
+                    "lastname": user.last_name,
+                }
+            )
 
-            return Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            })
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                }
+            )
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
@@ -87,11 +95,13 @@ class LogoutAPIView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "refresh": openapi.Schema(type=openapi.TYPE_STRING, description="Refresh токен")
+                "refresh": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Refresh токен"
+                )
             },
-            required=["refresh"]
+            required=["refresh"],
         ),
-        responses={200: "Успешный выход", 400: "Неверный токен"}
+        responses={200: "Успешный выход", 400: "Неверный токен"},
     )
     def post(self, request):
         try:
@@ -108,8 +118,7 @@ class ProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="Получение данных профиля",
-        responses={200: UserSerializer}
+        operation_summary="Получение данных профиля", responses={200: UserSerializer}
     )
     def get(self, request):
         user = request.user
@@ -119,7 +128,7 @@ class ProfileAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="Обновление данных профиля",
         request_body=UserSerializer,
-        responses={200: UserSerializer, 400: "Ошибка валидации"}
+        responses={200: UserSerializer, 400: "Ошибка валидации"},
     )
     def put(self, request):
         user = request.user
@@ -140,10 +149,12 @@ class DeleteAccountAPIView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "refresh": openapi.Schema(type=openapi.TYPE_STRING, description="Refresh токен (опционально)")
-            }
+                "refresh": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Refresh токен (опционально)"
+                )
+            },
         ),
-        responses={200: "Аккаунт деактивирован и выполнен выход"}
+        responses={200: "Аккаунт деактивирован и выполнен выход"},
     )
     def post(self, request):
         user = request.user
